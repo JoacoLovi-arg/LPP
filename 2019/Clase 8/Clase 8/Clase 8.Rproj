@@ -1,0 +1,70 @@
+library(twitteR)
+library(dplyr)
+library(tidyverse)
+library(lubridate)
+
+install.packages("rtweet")
+library("rtweet")
+
+Sys.setlocale(category = "LC_ALL", locale = "es_ES")
+
+appname<-"DatasetLPPUBA"
+key<- "SKHy4SD6OOmcq4VlJERHNQyTn"
+secret<- "9qU2v1U2l1NkCxejmEPLibJ3yoqgyO62gpPt5E0lE9zar1NF9s"
+accestoken<- "1123613816833630208-M2pQRzqqH5c1l5VPfoDfHVebXoBSQG"
+accessecret<- "xVlN5jiIysQPOds1pZw4YEqCf6cerI06Cys8Bgh6zzEZV"
+
+install.packages("httpuv")
+library(httpuv)
+trendsar<-get_trends("argentina")
+head(trendsar)
+
+MeLi<-search_tweets("mercado libre", n=2000000, include_rts = TRUE, retryonratelimit = TRUE)
+Grabois<-search_tweets("grabois", n=150000, include_rts = TRUE, retryonratelimit = TRUE)
+GOTstarbucks<- search_tweets("got starbucks", n=15000, include_rts = FALSE)
+
+facusuba<-c("DerechoUBA", "ubasociales", "Exactas_UBA")
+#acá hay un error, hay que darle permiso a twiter
+FacultadesUBA<-post_list(facusuba,"facusuba",description = "Facultades Universidad
+                         de Buenos Aires, creado vía rtweet")
+FacultadesUBA<-lists_members(slug = "facusuba", owner_user = "juanibelbis")
+
+twtFacusUBA<- vector("list", nrow(FacultadesUBA))
+for (i in seq_along(twtFacusUBA)){if((i%%56)==0){message("Sleeping for 15 minutes...")
+  Sys.sleep(60*15)}
+  twtFacusUBA[[i]]<-get_timeline(FacultadesUBA$user_id[i], n=3200)
+  message(i, "/", nrow(FacultadesUBA))}
+#acá lo que hicimos fue armar un dataset con tweets de la lista facusuba,
+#pero en vez de hacer un dataset por cada facu, escribimos una operacion
+#que busca en cada variable de la lista, lo hace como un ciclo, repitiendo
+#la operacion por cada variable 
+
+twtFacusUBA<-do.call(rbind, twtFacusUBA)
+
+#acomodamos la zona horaria de los tuits a GMT-3, operacionalizamos las fechas y filtramos
+tz_local<-"America/Argentina/Buenos_Aires"
+
+twtFacusUBA$created_at<-ymd_hms(twtFacusUBA$created_at)
+with_tz(twtFacusUBA$created_at, tz_local)
+
+twtFacusUBACORE<-twtFacusUBA%>%
+  select(status_id, created_at, screen_name)%>%
+  filter(created_at>=as.Date("2019-04-01")&created_at<=as.Date("2019-04-30"))
+
+TuitsPorFcaultad<-twtFacusUBA%>%
+  count(screen_name, sort = TRUE)
+
+twtFacusUBACORE<-twtFacusUBA&>&
+  count(, sort=TRUE)
+
+library(ggplot2)
+
+grafico1<- ts_plot(TuitsPorFcaultad, "1 hour" )+
+  ggplot2::theme_minimal()+
+  ggplot2::theme(plot.title = ggplot2::element_text(face = "bold"))+
+  ggplot2::labs(x=NULL, y=NULL, 
+                title = "Grafico 1 - Linea de tiempo - Facultades UBA", 
+                subtitle = "Cantidad de publicaciones (tuits) en intervalos de una hora", 
+                caption = "\n=source:datos recolectados de la APIrest de twiter vía rtweet")
+                  
+view(grafico1)

@@ -1,0 +1,219 @@
+---
+title: "Clase estadísticas descriptivas"
+author: "Lic. Ezequiel Marin"
+date: "Martes 8 de abril del 2025 | LABPP | FSOC | UBA"
+output: html_document
+---
+
+# Descripción estadística de los homicidios londinense
+
+Sin duda la seguridad pública es una de las áreas más sensibles de las gestiones de gobierno. En el marco de una sociedad democrática, la convicencia social puede observarse en el marco de su opuesto: la conflictividad criminal. Es muy amplio el debate teórico y empirico en torno a este tema, pero podemos intuir que la cantidad y el tipo de delitos que tienen lugar en una comunidad da cuenta de la calidad de su convicencia. Es por ello que 
+
+
+
+## Librerias
+
+Activación y descarga de las librerías de paquetes necesarias para relizar el anàlisis que se aborda en el presente documento.
+
+```{r warning=TRUE}
+library(tidyverse) #escencial en R
+library(lubridate) #es un paquete para poder trabajar con el formato de las fechas
+library(ggplot2) # gráficos
+```
+
+## Datos
+
+Se descargan datos de los homicidios registrados por la Policía Metropolitana de Londres (**MPS**, por sus siglas en inglés): https://data.london.gov.uk/dataset/mps-homicide-dashboard-data 
+
+**LIMITACIONES DE LOS DATOS**
+
+Fenomeno criminal, dificultad para medirlo. 
+
+Homicidios como mejor indicador porque se registra el 100% de los que ocurren
+
+Due to an internal IT deployment, from 27th February these datasets may be temporarily disrupted. Work is ongoing to rebuild these datasets.
+
+The data used in the MPS Homicide dashboard is available here Homicide dashboard | Metropolitan Police, along with the related data definitions. Please note that, this data set running quarterly behind with quarterly update.
+
+What does it show and how was the content agreed?
+
+In English and Welsh law, Homicide consists of the sum of 4 separate offences:
+
+ Murder (Common Law) * 
+
+ Manslaughter (sec 5 of the Offences Against The Person Act 1861)
+
+ Infanticide (Infanticide Act 1938)
+
+ Corporate Manslaughter (Corporate Manslaughter and Corporate Homicide Act 2007) these will not show gender for People Proceeded Against. 
+
+*Note that since 1996, the 'Year and a day rule' has been abolished. Therefore crimes of GBH can be upgraded to murder if the victim dies from their injuries at any point in time past the original offence.
+
+Caveats
+
+Jurisdiction: Not all homicides in London are recorded by the MPS and presented in this report. It should be noted that 2 other police forces have jurisdiction within the boundary of London: The City of London Police (COLP) and British Transport Police (BTP). Therefore any homicides committed within their jurisdiction will be recorded and reported by them, and not the MPS.
+
+Terrorism: The victims of the terrorist attacks in London in 2005 and 2017 are included in this data. However, note that for 2005, the victims of the Tavistock Square bus bombing are in the jurisdiction of the MPS and so included in this report, whereas the victims of the three tube train bombings are in the jurisdiction of the BTP and so do not appear in this report. In addition, note that for the London Bridge attacks of 2017, 1 victim was in the jurisdiction of the COLP and so is not in this report, whereas the rest of the victims were in the jurisdiction of the MPS and so are in this report.
+
+y carga
+
+```{r}
+homicidiosLON <- read.csv("data/Homicide Proceeded 2003 - March 2024.csv",
+                        sep=",",
+                        encoding = "UTF-8",
+                        stringsAsFactors = TRUE)
+
+dim(homicidiosLON)
+```
+
+Entre el año 2003 y marzo del 2024, la policía metropolitana de londres registró **4.512** procedimientos judiciales de homicidios en su jurisdicción. Estos son operacionalizados en ocho variables. A continuación se ven cuáles son: 
+
+```{r}
+names(homicidiosLON)
+```
+
+Count.of.PPA : siempre 1
+Borough : ciudad
+Gender : género
+Age.Group : rango etareo
+Self.Classified.Ethnicity : etnia autopercibida
+Offence.Type: tipo de ofensa
+Charged.Summonsed : 
+Proceedings.Date : fecha del acta
+
+Todas las variables son categóricas. Es necesario tener algunas variables intervalares continuas u ordinales (numéricas) para poder realizar un analisis de las estadísticas descriptivas del dataset. Se transforman los datos con este objetivo.
+
+```{r}
+homicidiosLON_13_23 <- homicidiosLON %>%
+  mutate(Prom.Edad = case_when(Age.Group == "10 to 14" ~ 12,
+                               Age.Group == "15 to 19" ~ 17,
+                               Age.Group == "20 to 24" ~ 22,
+                               Age.Group == "25 to 29" ~ 27,
+                               Age.Group == "30 to 34" ~ 32,
+                               Age.Group == "35 to 39" ~ 37,
+                               Age.Group == "40 to 44" ~ 42,
+                               Age.Group == "45 to 49" ~ 47,
+                               Age.Group == "50 to 54" ~ 52,
+                               Age.Group == "55 to 59" ~ 57,
+                               Age.Group == "60 to 64" ~ 62,
+                               Age.Group == "65 and over" ~ 67,),
+         Genero = case_when(Gender == "Female" ~ 0,
+                            Gender == "Male" ~ 1)) %>%
+   mutate(Proceedings.Date = my(Proceedings.Date),
+          Mes = month(Proceedings.Date),
+          Anio = year(Proceedings.Date)) %>%
+  mutate(Mes = as.factor(Mes)) %>%
+  filter(Anio > 2012 & Anio < 2024) 
+
+dim(homicidiosLON_13_23) 
+```
+
+De 8 variables originales agregamos 4 más:
+
+Prom.Edad
+Género
+Mes
+Ano
+
+## Análisis
+
+Medidas de tendencia central
+
+```{r}
+summary(homicidiosLON_13_23)
+```
+
+
+Histograma género
+
+```{r}
+hist(homicidiosLON_13_23$Genero)
+```
+
+Histograma con la edad
+
+```{r}
+hist(homicidiosLON_13_23$Prom.Edad)
+```
+
+```{r}
+ggplot(homicidiosLON_13_23)+
+  geom_histogram( aes(x = Prom.Edad, fill = Gender), bins = 10)+
+  labs(title="Edad promedio de acusados por homicidio",
+       subtitle = "Londres | 2013 - 2023",
+       fill="Genero",
+       x="Edad promedio",
+       y="Cantidad",
+       caption="Fuente: elaborado por LABPP en base a datos abiertos de MPS")+
+  scale_fill_manual(values = c("goldenrod2", "indianred2", "white"))+
+  theme_bw()
+
+```
+
+Cantidad de homicidios por distrito
+
+```{r}
+homicidios_por_distrito <- homicidiosLON_13_23 %>%
+  group_by(Borough, Anio) %>%
+  summarise(Homicidios = n()) %>%
+  arrange(desc(Homicidios))
+
+summary(homicidios_por_distrito)
+```
+
+En promedio hubo 
+
+
+```{r}
+boxplot(homicidios_por_distrito$Homicidios)
+```
+
+```{r}
+ggplot(homicidios_por_distrito) +
+  geom_boxplot(aes(x = Homicidios)) +
+  scale_fill_brewer()+
+  labs(title = "Cantidad de homicidios por distrito",
+       subtitle = "Londres | 2013 - 2023",
+       x = "",
+       fill = "",
+       caption = "Fuente: elaborado por LABPP en base a datos abiertos de MPS") +
+  theme_bw() +
+  facet_grid(~Anio)+ # Vamos a ordenar los resultados por día.
+  coord_flip() + # vamos a rotar nuestr gráfico.
+  theme(axis.text.x = element_blank(),  # Vamos a quitar el texto de nuestro eje y.
+        strip.text = element_text(face = "bold", size = 12)) # Vamos a sombrear los títulos nuestros encabezados.
+```
+
+
+scale_x_continuous(limits = c(0, 
+                                3000),
+                     breaks = seq(0, 
+                                  3000,
+                                  500))+
+  scale_fill_brewer(type = "qual", palette = 4)+
+  
+  
+
+Frecuencias con género
+
+Tasa de imputación Variable original: Charged.Summonsed
+Idea: Codificar como 1 (sí fue imputado) y 0 (no)
+Esto permite calcular proporciones, medias y estudiar correlaciones con otras variables como género, etnia, etc.
+
+
+Histograma de edades
+	•	Promedio y desviación estándar
+	•	Comparaciones por género o etnia
+
+¿En qué años ocurrieron más homicidios?
+	•	¿Hay estacionalidad en los homicidios?
+
+Histograma
+
+Boxplot
+
+
+
+
+
+

@@ -1,0 +1,26 @@
+battle<- read.csv("battles.csv",encoding="UTF-8",sep=",")
+character_predictions_pose<-read.csv("character-predictions_pose.csv",encoding="UTF-8", sep=",")
+death<- read.csv("character-deaths.csv", encoding="UTF-8",sep=",")
+
+library(tidyverse)
+library(ggplot2)
+library(sf)
+
+view(battle)
+view(character_predictions_pose)
+view(death)
+
+character_mas_popular<-character_predictions_pose%>%
+  filter(popularity>0.3)
+
+grafico1<-character_mas_popular%>%
+  ggplot(aes(x=plod, y=popularity, label=name))+
+  geom_point(aes(col=mother))+
+  geom_smooth()
+grafico1
+
+grafico2<-battle%>%
+  ggplot(aes(x=battle_number, y=attacker_size))+
+  geom_point()
+grafico2
+

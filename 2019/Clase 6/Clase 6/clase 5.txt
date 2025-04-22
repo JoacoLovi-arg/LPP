@@ -1,0 +1,6 @@
+analisis de texto natural
+
+Tokens: sirven para estructurar datos (palabras, emojis, palabras mal escritas)
+Stop-words: quitar palabras que no interesan (una palabra que se repita mucho, conectores, proposiciones, etc)
+TF-IDF (time frecuency-inverse document frecuency): cuentas las palabras de cada documento y selecciona palabras que caractericen a cada actor
+DFM (Document Feature Matrix): transforma en matriz el texto plano

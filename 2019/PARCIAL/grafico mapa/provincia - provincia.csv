@@ -1,0 +1,25 @@
+provincia_nombre_largo,jurisdiccion_tipo,provincia_nombre,autoridad_fuente,provincia_id,provincia_abreviatura,iso_3166_2, region,TI_urbano,TI_rural
+Provincia de Entre Ríos,Provincia,Entre Rios,IGN,30,ER,AR-E,CENTRO,6.0,21.5
+Provincia de Córdoba,Provincia,Cordoba,IGN,14,CB,AR-X,CENTRO,6.0,21.5
+Provincia de La Pampa,Provincia,La Pampa,IGN,42,LP,AR-L,CENTRO,6.0,21.5
+Provincia de Santa Fe,Provincia,Santa Fe,IGN,82,SF,AR-S,CENTRO,6.0,21.5
+Provincia de San Luis,Provincia,San Luis,IGN,74,SL,AR-D,CUYO,6.6,15.7
+Provincia de San Juan,Provincia,San Juan,IGN,70,SJ,AR-J,CUYO,6.6,15.7
+Provincia de Mendoza,Provincia,Mendoza,IGN,50,MZ,AR-M,CUYO,6.6,15.7
+Ciudad Autónoma de Buenos Aires,Ciudad Autónoma,Ciudad Autonoma de Buenos Aires,IGN,2,CABA,AR-C,GBA,8.4,0
+Provincia de Buenos Aires,Provincia,Buenos Aires,IGN,6,BA,AR-B,GBA,8.4,0
+Provincia de Misiones,Provincia,Misiones,IGN,54,MI,AR-N,NEA,7.2,25.8
+Provincia de Corrientes,Provincia,Corrientes,IGN,18,CR,AR-W,NEA,7.2,25.8
+Provincia del Chaco,Provincia,Chaco,IGN,22,CH,AR-H,NEA,7.2,25.8
+Provincia de Formosa,Provincia,Formosa,IGN,34,FO,AR-P,NEA,7.2,25.8
+Provincia de La Rioja,Provincia,La Rioja,IGN,46,LR,AR-F,NOA,10.6,21.1
+Provincia de Catamarca,Provincia,Catamarca,IGN,10,CA,AR-K,NOA,10.6,21.1
+Provincia de Santiago del Estero,Provincia,Santiago del Estero,IGN,86,SE,AR-G,NOA,10.6,21.1
+Provincia de Tucumán,Provincia,Tucuman,IGN,90,TU,AR-T,NOA,10.6,21.1
+Provincia de Salta,Provincia,Salta,IGN,66,SA,AR-A,NOA,10.6,21.1
+Provincia de Jujuy,Provincia,Jujuy,IGN,38,JY,AR-Y,NOA,10.6,21.1
+Provincia de Santa Cruz,Provincia,Santa Cruz,IGN,78,SC,AR-Z,PATAGONIA,5.3,15.0
+Provincia de Río Negro,Provincia,Rio Negro,IGN,62,RN,AR-R,PATAGONIA,5.3,15.0
+Provincia del Chubut,Provincia,Chubut,IGN,26,CT,AR-U,PATAGONIA,5.3,15.0
+Provincia del Neuquén,Provincia,Neuquen,IGN,58,NQ,AR-Q,PATAGONIA,5.3,15.0
+"Provincia de Tierra del Fuego, Antártida e Islas del Atlántico Sur",Provincia,"Tierra del Fuego, Antártida e Islas del Atlántico Sur",IGN,94,TF,AR-V,PATAGONIA,5.3,15.0
