@@ -93,6 +93,9 @@ mi_grafico  <-  ggplot(df_delitos, # llamamos a ggplot y definimos el df que vam
 
 ## 4.1 barplot - Gráfico de barras ####
 
+# Se usan para representar distribuciones de variables categóricas o comparaciones de cantidades entre categorías. 
+# Pueden mostrar frecuencias (conteos) o valores agregados (como sumas o promedios) usando el parámetro `stat`
+
 df1_delitos_comuna <- df_delitos2 %>%
   group_by(comuna, tipo_delito) %>%
   summarise(cantidad=n())%>%
@@ -151,6 +154,9 @@ p1_delito_comuna_c
 
 ## 4.2 linebar - Gráfico de líneas ####
 
+# Se usan cuando se quieren mostrar tendencias a lo largo del tiempo o el comportamiento de una variable continua ordenada. 
+# Es ideal para series temporales, especialmente cuando los datos están agrupados por fecha.
+
 df2_delitos_delitos_fecha <- df_delitos2 %>% 
   group_by(fecha, tipo_delito) %>% 
   summarise(cantidad=n())
@@ -164,6 +170,9 @@ p2_delitos_fecha <- ggplot(df2_delitos_delitos_fecha,
 p2_delitos_fecha
 
 ## 4.3 scatterplot - Gráfico de puntos ####
+
+# Se utilizan para hacer gráficos de dispersión, ideales cuando se quiere ver la relación entre dos variables numéricas. 
+# `geom_jitter()` es útil cuando los puntos se superponen mucho, ya que agrega un pequeño ruido para evitar solapamientos.
 
 df3_barrios <- df_delitos2%>%
   filter(longitud < -58 & longitud > -59) %>% # filtramos porque CABA está en este rango de longitud
@@ -217,6 +226,9 @@ p3_delitos_comisarias <- ggplot(df3_comisarias%>%
 p3_delitos_comisarias
 
 ## 4.4 heat map - Mapa de calor ####
+
+# Son útiles para representar matrices de valores, con el color en cada celda se puede indicar la magnitud de una variable. 
+# Se aplica frecuentemente a combinaciones de variables categóricas o discretizadas (por ejemplo, día y hora).
 
 df4_dias_horarios <- df_delitos2 %>% 
   mutate(dia = wday(fecha, label = T)) %>% 
